@@ -8,11 +8,15 @@ from app.Core.config import ALLOWED_ORIGINS
 from app.Core.database import engine
 from app.Participante.participanteModel import Participante
 from app.Participante.participanteRouter import router as participante_router
+from app.Usuario.usuarioModel import Usuario
+from app.Usuario.usuarioRouter import router as usuario_router
+from app.seeders import seedear_usuarios
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     SQLModel.metadata.create_all(engine)
+    seedear_usuarios()
     yield
 
 
@@ -26,4 +30,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(usuario_router)
 app.include_router(participante_router)

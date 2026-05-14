@@ -1,15 +1,26 @@
 import { useState } from "react";
-import { NavLink, Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
 
+import { useAuth } from "./context/AuthContext";
 import EditarPage from "./pages/EditarPage";
 import FormularioPage from "./pages/FormularioPage";
 import ListaPage from "./pages/ListaPage";
+import LoginPage from "./pages/LoginPage";
+import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const navigate = useNavigate();
+  const { isAuthenticated, user, logout, isLoading } = useAuth();
 
   const cerrarMenu = () => {
     setMenuAbierto(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+    cerrarMenu();
   };
 
   const obtenerClaseNavLink = ({ isActive }: { isActive: boolean }) => {
@@ -20,11 +31,31 @@ function App() {
     }`;
   };
 
+  // Si está cargando auth, mostrar loading
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-slate-600">Cargando...</p>
+      </div>
+    );
+  }
+
+  // Si no está autenticado, solo mostrar login
+  if (!isAuthenticated) {
+    return <LoginPage />;
+  }
+
+  // Si está autenticado, mostrar layout normal
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <header className="bg-white shadow rounded p-4">
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-3xl font-bold">Registro de Participantes</h1>
+          <div>
+            <h1 className="text-3xl font-bold">Registro de Participantes</h1>
+            <p className="text-sm text-slate-600">
+              Logueado como <strong>{user?.username}</strong> ({user?.rol})
+            </p>
+          </div>
 
           <button
             type="button"
@@ -35,14 +66,24 @@ function App() {
             ☰
           </button>
 
-          <nav className="hidden md:flex gap-2">
+          <nav className="hidden md:flex gap-2 items-center">
             <NavLink to="/" className={obtenerClaseNavLink}>
               Listado
             </NavLink>
 
-            <NavLink to="/nuevo" className={obtenerClaseNavLink}>
-              Nuevo participante
-            </NavLink>
+            {user?.rol === "ADMIN" && (
+              <NavLink to="/nuevo" className={obtenerClaseNavLink}>
+                Nuevo participante
+              </NavLink>
+            )}
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+            >
+              Cerrar sesión
+            </button>
           </nav>
         </div>
 
@@ -56,22 +97,54 @@ function App() {
               Listado
             </NavLink>
 
-            <NavLink
-              to="/nuevo"
-              onClick={cerrarMenu}
-              className={obtenerClaseNavLink}
+            {user?.rol === "ADMIN" && (
+              <NavLink
+                to="/nuevo"
+                onClick={cerrarMenu}
+                className={obtenerClaseNavLink}
+              >
+                Nuevo participante
+              </NavLink>
+            )}
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition w-full text-left"
             >
-              Nuevo participante
-            </NavLink>
+              Cerrar sesión
+            </button>
           </nav>
         )}
       </header>
 
       <main>
         <Routes>
-          <Route path="/" element={<ListaPage />} />
-          <Route path="/nuevo" element={<FormularioPage />} />
-          <Route path="/editar/:id" element={<EditarPage />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <ListaPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/nuevo"
+            element={
+              <PrivateRoute rol="ADMIN">
+                <FormularioPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/editar/:id"
+            element={
+              <PrivateRoute rol="ADMIN">
+                <EditarPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </main>
     </div>
