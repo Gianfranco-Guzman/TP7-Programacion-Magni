@@ -1,3 +1,5 @@
+import { useId, type RefObject, type ChangeEvent } from "react";
+
 import type { FiltrosState } from "./filtrosConfig";
 
 function Filtros({
@@ -8,6 +10,7 @@ function Filtros({
   onLimpiar,
   totalParticipantes,
   participantesFiltrados,
+  busquedaInputRef,
 }: {
   busqueda: string;
   modalidad: string;
@@ -16,10 +19,14 @@ function Filtros({
   onLimpiar: () => void;
   totalParticipantes: number;
   participantesFiltrados: number;
+  busquedaInputRef?: RefObject<HTMLInputElement | null>;
 }) {
-  const manejarCambio = (
-    evento: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const filtrosId = useId();
+  const busquedaId = `${filtrosId}-busqueda`;
+  const modalidadId = `${filtrosId}-modalidad`;
+  const nivelId = `${filtrosId}-nivel`;
+
+  const manejarCambio = (evento: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = evento.target;
 
     onCambiarFiltros({
@@ -34,20 +41,27 @@ function Filtros({
     <section className="bg-white shadow rounded p-4 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="block mb-1 font-medium">Buscar</label>
+          <label htmlFor={busquedaId} className="block mb-1 font-medium">
+            Buscar
+          </label>
           <input
+            id={busquedaId}
             type="text"
             name="busqueda"
             value={busqueda}
             onChange={manejarCambio}
             placeholder="Buscar por nombre"
             className="w-full border rounded px-3 py-2"
+            ref={busquedaInputRef}
           />
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Modalidad</label>
+          <label htmlFor={modalidadId} className="block mb-1 font-medium">
+            Modalidad
+          </label>
           <select
+            id={modalidadId}
             name="modalidad"
             value={modalidad}
             onChange={manejarCambio}
@@ -61,8 +75,11 @@ function Filtros({
         </div>
 
         <div>
-          <label className="block mb-1 font-medium">Nivel</label>
+          <label htmlFor={nivelId} className="block mb-1 font-medium">
+            Nivel
+          </label>
           <select
+            id={nivelId}
             name="nivel"
             value={nivel}
             onChange={manejarCambio}

@@ -143,10 +143,19 @@ export function ParticipantesProvider({ children }: ParticipantesProviderProps) 
   };
 
   const cargarDatosEjemplo = async () => {
+    const existentes = await obtenerParticipantes();
+    const emailsExistentes = new Set(
+      existentes.map((participante) => participante.email.toLowerCase()),
+    );
+
     for (const participante of participantesEjemplo) {
       const { id, ...datosParaCrear } = participante;
+      if (emailsExistentes.has(datosParaCrear.email.toLowerCase())) {
+        continue;
+      }
       await crearParticipante(datosParaCrear);
     }
+
     await cargarParticipantes();
   };
 

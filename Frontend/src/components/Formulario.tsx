@@ -1,4 +1,11 @@
-import { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 
 import { useParticipantes } from "../context/ParticipantesContext";
 import type {
@@ -42,6 +49,15 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
   const [mostrarNotificacion, setMostrarNotificacion] = useState(false);
   const [tipoNotificacion, setTipoNotificacion] = useState<"exito" | "error">("exito");
 
+  const nombreInputRef = useRef<HTMLInputElement | null>(null);
+  const formId = useId();
+  const nombreId = `${formId}-nombre`;
+  const emailId = `${formId}-email`;
+  const edadId = `${formId}-edad`;
+  const paisId = `${formId}-pais`;
+  const nivelId = `${formId}-nivel`;
+  const aceptaTerminosId = `${formId}-aceptaTerminos`;
+
   const tecnologiasDisponibles = ["React", "Angular", "Vue", "Node", "Python", "Java"];
   const paisesDisponibles = ["Argentina", "Chile", "Uruguay", "Mexico", "Espana"];
   const modalidadesDisponibles: Modalidad[] = ["Presencial", "Virtual", "Hibrido"];
@@ -62,6 +78,10 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
       setEstoyEditando(true);
     }
   }, [participanteEnEdicion]);
+
+  useEffect(() => {
+    nombreInputRef.current?.focus();
+  }, []);
 
   const manejarCambioInput = (
     evento: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -128,8 +148,8 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
         setMostrarNotificacion(false);
         void onSuccess?.();
       }, 1000);
-      
-    } catch (error) {
+
+    } catch {
       setTipoNotificacion("error");
       setMostrarNotificacion(true);
       setTimeout(() => {
@@ -167,20 +187,27 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
         className="bg-white shadow rounded p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
       >
       <div>
-        <label className="block mb-1 font-medium">Nombre</label>
+        <label htmlFor={nombreId} className="block mb-1 font-medium">
+          Nombre
+        </label>
         <input
+          id={nombreId}
           type="text"
           name="nombre"
           value={formulario.nombre}
           onChange={manejarCambioInput}
           className="w-full border rounded px-3 py-2"
           required
+          ref={nombreInputRef}
         />
       </div>
 
       <div>
-        <label className="block mb-1 font-medium">Email</label>
+        <label htmlFor={emailId} className="block mb-1 font-medium">
+          Email
+        </label>
         <input
+          id={emailId}
           type="email"
           name="email"
           value={formulario.email}
@@ -191,8 +218,11 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
       </div>
 
       <div>
-        <label className="block mb-1 font-medium">Edad</label>
+        <label htmlFor={edadId} className="block mb-1 font-medium">
+          Edad
+        </label>
         <input
+          id={edadId}
           type="number"
           name="edad"
           value={formulario.edad}
@@ -204,8 +234,11 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
       </div>
 
       <div>
-        <label className="block mb-1 font-medium">Pais</label>
+        <label htmlFor={paisId} className="block mb-1 font-medium">
+          Pais
+        </label>
         <select
+          id={paisId}
           name="pais"
           value={formulario.pais}
           onChange={manejarCambioInput}
@@ -223,16 +256,22 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
         <p className="mb-2 font-medium">Modalidad</p>
         <div className="flex gap-4 flex-wrap">
           {modalidadesDisponibles.map((modalidad) => (
-            <label key={modalidad} className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="modalidad"
-                value={modalidad}
-                checked={formulario.modalidad === modalidad}
-                onChange={manejarCambioInput}
-              />
-              {modalidad}
-            </label>
+            (() => {
+              const modalidadInputId = `${formId}-modalidad-${modalidad}`;
+              return (
+                <div key={modalidad} className="flex items-center gap-2">
+                  <input
+                    id={modalidadInputId}
+                    type="radio"
+                    name="modalidad"
+                    value={modalidad}
+                    checked={formulario.modalidad === modalidad}
+                    onChange={manejarCambioInput}
+                  />
+                  <label htmlFor={modalidadInputId}>{modalidad}</label>
+                </div>
+              );
+            })()
           ))}
         </div>
       </div>
@@ -241,21 +280,30 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
         <p className="mb-2 font-medium">Tecnologias</p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {tecnologiasDisponibles.map((tecnologia) => (
-            <label key={tecnologia} className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={formulario.tecnologias.includes(tecnologia)}
-                onChange={() => manejarCambioTecnologias(tecnologia)}
-              />
-              {tecnologia}
-            </label>
+            (() => {
+              const tecnologiaInputId = `${formId}-tecnologia-${tecnologia}`;
+              return (
+                <div key={tecnologia} className="flex items-center gap-2">
+                  <input
+                    id={tecnologiaInputId}
+                    type="checkbox"
+                    checked={formulario.tecnologias.includes(tecnologia)}
+                    onChange={() => manejarCambioTecnologias(tecnologia)}
+                  />
+                  <label htmlFor={tecnologiaInputId}>{tecnologia}</label>
+                </div>
+              );
+            })()
           ))}
         </div>
       </div>
 
       <div className="md:col-span-2">
-        <label className="block mb-1 font-medium">Nivel de experiencia</label>
+        <label htmlFor={nivelId} className="block mb-1 font-medium">
+          Nivel de experiencia
+        </label>
         <select
+          id={nivelId}
           name="nivel"
           value={formulario.nivel}
           onChange={manejarCambioInput}
@@ -270,8 +318,9 @@ function Formulario({ onSuccess, onCancelar }: FormularioProps) {
       </div>
 
       <div className="md:col-span-2">
-        <label className="flex items-center gap-2">
+        <label htmlFor={aceptaTerminosId} className="flex items-center gap-2">
           <input
+            id={aceptaTerminosId}
             type="checkbox"
             name="aceptaTerminos"
             checked={formulario.aceptaTerminos}
