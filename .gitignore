@@ -1,3 +1,4 @@
 Backend/participantes.db
 **/__pycache__/
 **/*.pyc
+.env
