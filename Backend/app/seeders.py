@@ -22,6 +22,6 @@ def seedear_usuarios():
 
             if not existente:
                 uow.session.add(usuario)
-                print(f"✓ Usuario '{usuario.username}' creado")
+                print(f"[OK] Usuario '{usuario.username}' creado")
             else:
-                print(f"✗ Usuario '{usuario.username}' ya existe")
+                print(f"[--] Usuario '{usuario.username}' ya existe")

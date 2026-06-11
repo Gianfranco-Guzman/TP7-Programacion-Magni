@@ -112,8 +112,12 @@ export function ParticipantesProvider({ children }: ParticipantesProviderProps) 
   const [state, dispatch] = useReducer(participantesReducer, estadoInicial);
 
   const cargarParticipantes = async () => {
-    const datos = await obtenerParticipantes();
-    dispatch({ type: "GET_PARTICIPANTES", payload: datos });
+    try {
+      const datos = await obtenerParticipantes();
+      dispatch({ type: "GET_PARTICIPANTES", payload: datos });
+    } catch {
+      dispatch({ type: "GET_PARTICIPANTES", payload: [] });
+    }
   };
 
   useEffect(() => {

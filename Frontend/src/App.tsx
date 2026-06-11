@@ -2,10 +2,14 @@ import { useState } from "react";
 import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
 
 import { useAuth } from "./context/AuthContext";
+import CursosPage from "./pages/CursosPage";
 import EditarPage from "./pages/EditarPage";
 import FormularioPage from "./pages/FormularioPage";
 import ListaPage from "./pages/ListaPage";
 import LoginPage from "./pages/LoginPage";
+import PagoExitosoPage from "./pages/PagoExitosoPage";
+import PagoFallidoPage from "./pages/PagoFallidoPage";
+import PagoPendientePage from "./pages/PagoPendientePage";
 import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
@@ -71,6 +75,10 @@ function App() {
               Listado
             </NavLink>
 
+            <NavLink to="/cursos" className={obtenerClaseNavLink}>
+              Cursos
+            </NavLink>
+
             {user?.rol === "ADMIN" && (
               <NavLink to="/nuevo" className={obtenerClaseNavLink}>
                 Nuevo participante
@@ -95,6 +103,14 @@ function App() {
               className={obtenerClaseNavLink}
             >
               Listado
+            </NavLink>
+
+            <NavLink
+              to="/cursos"
+              onClick={cerrarMenu}
+              className={obtenerClaseNavLink}
+            >
+              Cursos
             </NavLink>
 
             {user?.rol === "ADMIN" && (
@@ -141,6 +157,38 @@ function App() {
             element={
               <PrivateRoute rol="ADMIN">
                 <EditarPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cursos"
+            element={
+              <PrivateRoute>
+                <CursosPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/pago-exitoso"
+            element={
+              <PrivateRoute>
+                <PagoExitosoPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/pago-pendiente"
+            element={
+              <PrivateRoute>
+                <PagoPendientePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/pago-fallido"
+            element={
+              <PrivateRoute>
+                <PagoFallidoPage />
               </PrivateRoute>
             }
           />

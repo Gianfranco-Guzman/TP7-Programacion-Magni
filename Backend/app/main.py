@@ -7,6 +7,7 @@ from sqlmodel import SQLModel
 from app.Core.config import ALLOWED_ORIGINS
 from app.Core.database import engine
 from app.Participante.participanteModel import Participante
+from app.MercadoPago.mercadoPagoRouter import router as mercadopago_router
 from app.Participante.participanteRouter import router as participante_router
 from app.Usuario.usuarioModel import Usuario
 from app.Usuario.usuarioRouter import router as usuario_router
@@ -32,3 +33,4 @@ app.add_middleware(
 
 app.include_router(usuario_router)
 app.include_router(participante_router)
+app.include_router(mercadopago_router)

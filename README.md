@@ -1,90 +1,96 @@
-# TP7 - Sistema de Registro de Participantes con Autenticación JWT y Roles
+# TP7 al TP9 - Sistema de Registro de Participantes con Autenticación JWT, Roles y Pago con Mercado Pago
 
-Este proyecto implementa un sistema de registro de participantes con un backend en FastAPI y un frontend en React. La característica principal es la integración de autenticación JWT (JSON Web Tokens) y control de acceso basado en roles (RBAC), permitiendo diferenciar entre usuarios `ADMIN` y `CONSULTA`.
+Backend en FastAPI y frontend en React con autenticación JWT, control de acceso por roles (ADMIN / CONSULTA), hooks personalizados y pagos con Mercado Pago Checkout Pro.
 
-## Tecnologías Utilizadas
+## Tecnologías
 
-*   **Backend**: FastAPI, SQLModel, SQLite, Uvicorn, Python-Jose.
-*   **Frontend**: React 19, TypeScript, Vite, React Router DOM.
+- **Backend**: FastAPI, SQLModel, SQLite, Uvicorn, Python-Jose, Mercado Pago SDK
+- **Frontend**: React 19, TypeScript, Vite, React Router DOM, Tailwind CSS
 
-## Requisitos Previos
+## Requisitos previos
 
-Asegúrate de tener instalado en tu sistema:
+- Python 3.8+ y `pip`
+- Node.js y `npm`
+- ngrok (solo para TP9)
 
-*   **Python 3.8+** y `pip`
-*   **Node.js** y `npm`
-
-## Guía de Ejecución Rápida
-
-Sigue estos pasos para levantar el proyecto y probarlo.
-
-### 1. Clonar el Repositorio (si aún no lo hiciste)
-
-```bash
-git clone <URL_DE_TU_REPOSITORIO>
-cd TP6-Programacion-Magni # O el nombre de tu carpeta raíz
-```
-
-### 2. Instalar Dependencias del Backend
-
-Abre una **terminal nueva** y navega a la carpeta `Backend`:
+## Instalación (una sola vez)
 
 ```bash
 cd Backend
 pip install -r requirements.txt
 ```
 
-### 3. Instalar Dependencias del Frontend
-
-Abre otra **terminal nueva** y navega a la carpeta `Frontend`:
-
 ```bash
 cd Frontend
 npm install
 ```
 
-### 4. Ejecutar el Backend (Terminal 1)
+## Ejecución
 
-En la terminal donde instalaste las dependencias del backend (en la carpeta `Backend`), ejecuta:
+### Terminal 1 — Backend
 
 ```bash
+cd Backend
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Deberías ver un mensaje similar a:
-`INFO: Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)`
-Esto indica que el backend está listo y ha ejecutado los seeders para crear los usuarios de prueba.
-
-### 5. Ejecutar el Frontend (Terminal 2)
-
-En la terminal donde instalaste las dependencias del frontend (en la carpeta `Frontend`), ejecuta:
+### Terminal 2 — Frontend
 
 ```bash
+cd Frontend
 npm run dev
 ```
 
-Deberías ver un mensaje similar a:
-`➜ Local: http://localhost:5173/`
-Abre esa URL en tu navegador web.
+### Terminal 3 — ngrok (solo para TP9 / Mercado Pago)
 
-## Credenciales de Prueba
+```bash
+ngrok http --domain=lobularly-unprosaical-nedra.ngrok-free.dev 5173
+```
 
-El backend inicializa automáticamente los siguientes usuarios:
+## Si el puerto 8000 ya está ocupado
 
-*   **ADMIN**:
-    *   **Usuario**: `admin`
-    *   **Contraseña**: `admin123`
-*   **CONSULTA**:
-    *   **Usuario**: `consulta`
-    *   **Contraseña**: `consulta123`
+Correr esto en PowerShell antes de iniciar el backend:
 
-## Verificación Rápida
+```powershell
+Stop-Process -Id (Get-NetTCPConnection -LocalPort 8000 -State Listen).OwningProcess -Force
+```
 
-1.  **Login como ADMIN**:
-    *   Ingresa con las credenciales `admin/admin123`.
-    *   Deberías ver el menú completo, incluyendo la opción "Nuevo participante", y los botones de Editar/Eliminar en las tarjetas. Podrás crear, editar y eliminar participantes.
-2.  **Login como CONSULTA**:
-    *   Ingresa con las credenciales `consulta/consulta123`.
-    *   Deberías ver la lista de participantes, pero **no** la opción "Nuevo participante" en el menú, ni los botones de Editar/Eliminar en las tarjetas. No podrás realizar acciones de modificación.
-3.  **Sin autenticación**:
-    *   Al intentar acceder a la aplicación sin haber iniciado sesión, o al cerrar sesión, serás redirigido automáticamente a la página de login.
+## Credenciales de prueba
+
+### App
+
+| Rol | Usuario | Contraseña |
+|---|---|---|
+| ADMIN | `admin` | `admin123` |
+| CONSULTA | `consulta` | `consulta123` |
+
+### Mercado Pago (sandbox)
+
+| Campo | Valor |
+|---|---|
+| Usuario de prueba | `TESTUSER2269543688887660140` |
+| Contraseña | `NkP07CHtmr` |
+| Tarjeta | `4509 9535 6623 3704` |
+| Vencimiento | `11/30` |
+| CVV | `123` |
+| DNI (para aprobar) | `12345678` |
+
+Estado de pago: usar `APRO` con DNI `12345678` para pago aprobado, `OTHE` para rechazo.
+
+## Funcionalidades
+
+### TP7 — Autenticación y roles
+- Login con JWT
+- Rol ADMIN: crear, editar y eliminar participantes
+- Rol CONSULTA: solo lectura
+
+### TP8 — Hooks
+- `useRef` para foco automático en el campo de búsqueda
+- `useId` para IDs accesibles en formularios
+- Hook personalizado `useHotkey` (atajo Ctrl+B para enfocar búsqueda)
+- Hook personalizado `useTransientFlag` (notificaciones temporales)
+
+### TP9 — Mercado Pago Checkout Pro
+- Página `/cursos` con 6 cursos y sus precios
+- Botón "QUIERO ESTE CURSO" que crea una preferencia de pago y redirige al checkout de MP
+- Páginas de retorno: `/pago-exitoso`, `/pago-pendiente`, `/pago-fallido`
