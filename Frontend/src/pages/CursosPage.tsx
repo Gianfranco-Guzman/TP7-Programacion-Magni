@@ -7,37 +7,37 @@ const cursos = [
     id: 1,
     nombre: "Curso React",
     descripcion: "Desarrollo de interfaces modernas con React 19",
-    precio: 25000,
+    precio: 2500,
   },
   {
     id: 2,
     nombre: "Curso DBA",
     descripcion: "Administración y optimización de bases de datos",
-    precio: 40000,
+    precio: 4000,
   },
   {
     id: 3,
     nombre: "Curso Python",
     descripcion: "Programación backend con Python y FastAPI",
-    precio: 30000,
+    precio: 3000,
   },
   {
     id: 4,
     nombre: "Curso Node.js",
     descripcion: "Desarrollo de APIs REST con Node.js y Express",
-    precio: 28000,
+    precio: 2800,
   },
   {
     id: 5,
     nombre: "Curso Docker & DevOps",
     descripcion: "Contenedores, orquestación y pipelines CI/CD",
-    precio: 35000,
+    precio: 3500,
   },
   {
     id: 6,
     nombre: "Curso TypeScript",
     descripcion: "Tipado estático y patrones avanzados en TypeScript",
-    precio: 22000,
+    precio: 2200,
   },
 ];
 

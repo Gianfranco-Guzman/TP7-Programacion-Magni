@@ -35,7 +35,7 @@ function App() {
     }`;
   };
 
-  // Si está cargando auth, mostrar loading
+ 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -44,12 +44,12 @@ function App() {
     );
   }
 
-  // Si no está autenticado, solo mostrar login
+
   if (!isAuthenticated) {
     return <LoginPage />;
   }
 
-  // Si está autenticado, mostrar layout normal
+  // si esta autenticado mostrar layout normal
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <header className="bg-white shadow rounded p-4">
