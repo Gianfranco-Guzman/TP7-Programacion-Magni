@@ -36,6 +36,7 @@ def crear_preferencia(
             "pending": f"{NGROK_URL}/pago-pendiente",
         },
         "auto_return": "approved",
+        "external_reference": datos.titulo,
     }
 
     resultado = sdk.preference().create(preference_data)

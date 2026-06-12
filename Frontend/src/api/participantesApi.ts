@@ -4,7 +4,7 @@ export type ParticipanteCreate = Omit<DatosParticipante, "id">;
 
 const API_URL = "http://localhost:8000/participantes";
 
-// Helper para obtener headers con token
+//obtener headers con token
 function getHeaders(): Record<string, string> {
   const token = localStorage.getItem("auth_token");
   
